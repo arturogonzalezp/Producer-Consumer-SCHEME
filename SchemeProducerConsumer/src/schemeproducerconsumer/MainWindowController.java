@@ -1,5 +1,6 @@
 package schemeproducerconsumer;
 
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXSlider;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXTreeTableView;
@@ -30,12 +31,28 @@ public class MainWindowController implements Initializable {
     private JFXSlider bufferNumSlider, consumerNumSlider, producerNumSlider;
     @FXML
     private JFXTextField consumerTimeInput, producerTimeInput;
+    @FXML
+    private JFXButton startButton, stopButton; 
     
     @FXML
     private void runProgram(ActionEvent event){
         setQueueCounter(getProducerNum());
         setDoneCounter(getConsumerNum());
         runErrorDialog("Buffer size: " + getBufferNum());
+        changeInputStates(true);
+    }
+    @FXML
+    private void stopProgram(ActionEvent event){
+        changeInputStates(false);
+    }
+    private void changeInputStates(Boolean state){
+        bufferNumSlider.setDisable(state);
+        consumerNumSlider.setDisable(state);
+        producerNumSlider.setDisable(state);
+        consumerTimeInput.setDisable(state);
+        producerTimeInput.setDisable(state);
+        startButton.setDisable(state);
+        stopButton.setDisable(!state);
     }
     public void runErrorDialog(String message) {
         new ErrorDialog(message,messagePane).show();
