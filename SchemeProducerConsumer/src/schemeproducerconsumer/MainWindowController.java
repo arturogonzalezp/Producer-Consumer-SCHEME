@@ -6,6 +6,7 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import schemeproducerconsumer.visual.controllers.ErrorDialog;
 
@@ -21,16 +22,37 @@ public class MainWindowController implements Initializable {
     private JFXTreeTableView onqueueTreeView;
     @FXML
     private JFXTreeTableView doneTreeView;
+    @FXML
+    private Label onqueueCountLabel;
+    @FXML
+    private Label doneCountLabel;
     
     @FXML
-    private void runErrorDialog(ActionEvent event) {
-        ErrorDialog errorDialog = new ErrorDialog("Something went wrong",messagePane);
-        errorDialog.show();
+    private void runProgram(ActionEvent event){
+        setQueueCounter(getQueueCounter()+1);
+        setDoneCounter(getDoneCounterLabel()*2);
     }
-    
+    private void runErrorDialog(String message) {
+        new ErrorDialog(message,messagePane).show();
+    }
+    public void setQueueCounter(int num){
+        String str = "" + num;
+        onqueueCountLabel.setText(str);
+    }
+    public void setDoneCounter(int num){
+        String str = "" + num;
+        doneCountLabel.setText(str);
+    }
+    public int getQueueCounter(){
+        return Integer.parseInt(onqueueCountLabel.getText());
+    }
+    public int getDoneCounterLabel(){
+        return Integer.parseInt(doneCountLabel.getText());
+    }
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
+        setDoneCounter(1);
+        setQueueCounter(1);
     }    
     
 }

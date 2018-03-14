@@ -18,7 +18,6 @@ public class SchemeProducerConsumer extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("MainWindowView.fxml"));
         root.setStyle("-fx-background-color: #ffffff;");
         Scene scene = new Scene(root);
-        
         stage.setScene(scene);
         stage.setResizable(false);
         stage.setTitle("SCHEME Producer Consumer");
