@@ -23,25 +23,13 @@ public class MainWindowController implements Initializable {
     @FXML
     private StackPane messagePane;
     @FXML
-    private JFXTreeTableView onqueueTreeView;
+    private JFXTreeTableView onqueueTreeView, doneTreeView;
     @FXML
-    private JFXTreeTableView doneTreeView;
+    private Label onqueueCountLabel, doneCountLabel, bufferLabel, consumerLabel, producerLabel;
     @FXML
-    private Label onqueueCountLabel;
+    private JFXSlider bufferNumSlider, consumerNumSlider, producerNumSlider;
     @FXML
-    private Label doneCountLabel;
-    @FXML
-    private JFXSlider bufferNumSlider;
-    @FXML
-    private JFXSlider consumerNumSlider;
-    @FXML
-    private JFXSlider producerNumSlider;
-    @FXML
-    private JFXTextField consumerTimeInput;
-    @FXML
-    private JFXTextField producerTimeInput;
-    @FXML
-    private Label bufferLabel, consumerLabel, producerLabel;
+    private JFXTextField consumerTimeInput, producerTimeInput;
     
     @FXML
     private void runProgram(ActionEvent event){
