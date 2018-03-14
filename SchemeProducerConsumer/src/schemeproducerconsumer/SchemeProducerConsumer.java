@@ -16,7 +16,7 @@ public class SchemeProducerConsumer extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("MainWindowView.fxml"));
-        
+        root.setStyle("-fx-background-color: #ffffff;");
         Scene scene = new Scene(root);
         
         stage.setScene(scene);

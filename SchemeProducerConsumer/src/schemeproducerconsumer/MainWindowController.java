@@ -1,6 +1,6 @@
 package schemeproducerconsumer;
 
-import com.jfoenix.controls.JFXChipView;
+import com.jfoenix.controls.JFXTreeTableView;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -18,7 +18,9 @@ public class MainWindowController implements Initializable {
     @FXML
     private StackPane messagePane;
     @FXML
-    private JFXChipView onqueueChipView;
+    private JFXTreeTableView onqueueTreeView;
+    @FXML
+    private JFXTreeTableView doneTreeView;
     
     @FXML
     private void runErrorDialog(ActionEvent event) {
