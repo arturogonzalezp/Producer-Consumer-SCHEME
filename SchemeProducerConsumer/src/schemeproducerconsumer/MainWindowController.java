@@ -1,8 +1,12 @@
 package schemeproducerconsumer;
 
+import com.jfoenix.controls.JFXSlider;
+import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXTreeTableView;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -26,13 +30,26 @@ public class MainWindowController implements Initializable {
     private Label onqueueCountLabel;
     @FXML
     private Label doneCountLabel;
+    @FXML
+    private JFXSlider bufferNumSlider;
+    @FXML
+    private JFXSlider consumerNumSlider;
+    @FXML
+    private JFXSlider producerNumSlider;
+    @FXML
+    private JFXTextField consumerTimeInput;
+    @FXML
+    private JFXTextField producerTimeInput;
+    @FXML
+    private Label bufferLabel, consumerLabel, producerLabel;
     
     @FXML
     private void runProgram(ActionEvent event){
-        setQueueCounter(getQueueCounter()+1);
-        setDoneCounter(getDoneCounterLabel()*2);
+        setQueueCounter(getProducerNum());
+        setDoneCounter(getConsumerNum());
+        runErrorDialog("Buffer size: " + getBufferNum());
     }
-    private void runErrorDialog(String message) {
+    public void runErrorDialog(String message) {
         new ErrorDialog(message,messagePane).show();
     }
     public void setQueueCounter(int num){
@@ -49,10 +66,38 @@ public class MainWindowController implements Initializable {
     public int getDoneCounterLabel(){
         return Integer.parseInt(doneCountLabel.getText());
     }
+    public int getBufferNum(){
+        return (int) bufferNumSlider.getValue();
+    }
+    public int getProducerNum(){
+        return (int) producerNumSlider.getValue();
+    }
+    public int getConsumerNum(){
+        return (int) consumerNumSlider.getValue();
+    }
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        setDoneCounter(1);
-        setQueueCounter(1);
+        bufferNumSlider.valueProperty().addListener(new ChangeListener<Number>(){
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                bufferNumSlider.setValue(newValue.intValue());
+                bufferLabel.setText("Buffers (" + ((int)bufferNumSlider.getValue()) + ")");
+            }
+        });
+        consumerNumSlider.valueProperty().addListener(new ChangeListener<Number>(){
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                consumerNumSlider.setValue(newValue.intValue());
+                consumerLabel.setText("Consumers (" + ((int) consumerNumSlider.getValue()) + ")");
+            }
+        });
+        producerNumSlider.valueProperty().addListener(new ChangeListener<Number>(){
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                producerNumSlider.setValue(newValue.intValue());
+                producerLabel.setText("Producers (" + ((int)producerNumSlider.getValue()) + ")");
+            }
+        });
     }    
     
 }
