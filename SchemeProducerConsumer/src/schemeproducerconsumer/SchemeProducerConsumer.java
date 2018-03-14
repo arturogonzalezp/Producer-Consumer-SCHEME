@@ -19,11 +19,13 @@ public class SchemeProducerConsumer extends Application {
     
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("Sample.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("MainWindowController.fxml"));
         
         Scene scene = new Scene(root);
         
         stage.setScene(scene);
+        stage.setResizable(false);
+        stage.setTitle("SCHEME Producer Consumer");
         stage.show();
     }
 
