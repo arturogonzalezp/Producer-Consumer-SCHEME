@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package schemeproducerconsumer;
 
 import javafx.application.Application;
@@ -12,17 +7,17 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**
- *
- * @author cesar
+ * @author César Arturo González Pérez
+ * @github arturogonzalezp
  */
+
 public class SchemeProducerConsumer extends Application {
     
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("MainWindowController.fxml"));
-        
+        Parent root = FXMLLoader.load(getClass().getResource("MainWindowView.fxml"));
+        root.setStyle("-fx-background-color: #ffffff;");
         Scene scene = new Scene(root);
-        
         stage.setScene(scene);
         stage.setResizable(false);
         stage.setTitle("SCHEME Producer Consumer");

@@ -1,58 +1,91 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package schemeproducerconsumer;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXChipView;
-import com.jfoenix.controls.JFXDialog;
-import com.jfoenix.controls.JFXDialogLayout;
+import com.jfoenix.controls.JFXSlider;
+import com.jfoenix.controls.JFXTextField;
+import com.jfoenix.controls.JFXTreeTableView;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
-import javafx.scene.text.Text;
+import schemeproducerconsumer.visual.controllers.ErrorDialog;
 
 /**
- *
- * @author cesar
+ * @author César Arturo González Pérez
+ * @github arturogonzalezp
  */
+
 public class MainWindowController implements Initializable {
     @FXML
     private StackPane messagePane;
     @FXML
-    private JFXChipView onqueueChipView;
+    private JFXTreeTableView onqueueTreeView, doneTreeView;
+    @FXML
+    private Label onqueueCountLabel, doneCountLabel, bufferLabel, consumerLabel, producerLabel;
+    @FXML
+    private JFXSlider bufferNumSlider, consumerNumSlider, producerNumSlider;
+    @FXML
+    private JFXTextField consumerTimeInput, producerTimeInput;
     
     @FXML
-    private void runErrorDialog(ActionEvent event) {
-        JFXDialogLayout errorDialogLayout = new JFXDialogLayout();
-        errorDialogLayout.setHeading(new Label("Error"));
-        errorDialogLayout.setBody(new Text("Something went wrong"));
-        
-        JFXDialog errorDialog = new JFXDialog(messagePane,errorDialogLayout, JFXDialog.DialogTransition.CENTER);
-        
-        JFXButton okButton = new JFXButton("Ok");
-        okButton.setButtonType(JFXButton.ButtonType.FLAT);
-        okButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event1) {
-                errorDialog.close();
-            }
-        });
-        errorDialogLayout.setActions(okButton);
-        
-        errorDialog.show();
+    private void runProgram(ActionEvent event){
+        setQueueCounter(getProducerNum());
+        setDoneCounter(getConsumerNum());
+        runErrorDialog("Buffer size: " + getBufferNum());
     }
-    
+    public void runErrorDialog(String message) {
+        new ErrorDialog(message,messagePane).show();
+    }
+    public void setQueueCounter(int num){
+        String str = "" + num;
+        onqueueCountLabel.setText(str);
+    }
+    public void setDoneCounter(int num){
+        String str = "" + num;
+        doneCountLabel.setText(str);
+    }
+    public int getQueueCounter(){
+        return Integer.parseInt(onqueueCountLabel.getText());
+    }
+    public int getDoneCounterLabel(){
+        return Integer.parseInt(doneCountLabel.getText());
+    }
+    public int getBufferNum(){
+        return (int) bufferNumSlider.getValue();
+    }
+    public int getProducerNum(){
+        return (int) producerNumSlider.getValue();
+    }
+    public int getConsumerNum(){
+        return (int) consumerNumSlider.getValue();
+    }
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
+        bufferNumSlider.valueProperty().addListener(new ChangeListener<Number>(){
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                bufferNumSlider.setValue(newValue.intValue());
+                bufferLabel.setText("Buffers (" + ((int)bufferNumSlider.getValue()) + ")");
+            }
+        });
+        consumerNumSlider.valueProperty().addListener(new ChangeListener<Number>(){
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                consumerNumSlider.setValue(newValue.intValue());
+                consumerLabel.setText("Consumers (" + ((int) consumerNumSlider.getValue()) + ")");
+            }
+        });
+        producerNumSlider.valueProperty().addListener(new ChangeListener<Number>(){
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                producerNumSlider.setValue(newValue.intValue());
+                producerLabel.setText("Producers (" + ((int)producerNumSlider.getValue()) + ")");
+            }
+        });
     }    
     
 }
