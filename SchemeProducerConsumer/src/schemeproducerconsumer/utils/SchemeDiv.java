@@ -1,5 +1,7 @@
 package schemeproducerconsumer.utils;
 
+import schemeproducerconsumer.exceptions.InvalidSchemeOperation;
+
 /**
  * @author César Arturo González Pérez
  * @github arturogonzalezp
