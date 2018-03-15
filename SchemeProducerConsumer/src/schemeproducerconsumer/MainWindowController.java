@@ -26,6 +26,8 @@ import schemeproducerconsumer.exceptions.InvalidSchemeOperation;
 import schemeproducerconsumer.utils.SchemeArithmeticFunction;
 import schemeproducerconsumer.utils.SchemeArithmeticFunctionWrapper;
 import schemeproducerconsumer.utils.SchemeDiv;
+import schemeproducerconsumer.utils.SchemeMultiply;
+import schemeproducerconsumer.utils.SchemeSub;
 import schemeproducerconsumer.utils.SchemeSum;
 import schemeproducerconsumer.visual.controllers.ErrorDialog;
 
@@ -160,16 +162,27 @@ public class MainWindowController implements Initializable {
     public int getConsumerNum(){
         return (int) consumerNumSlider.getValue();
     }
-    public void insertToProducerTable(SchemeArithmeticFunction function){
-        producerTableList.add(new SchemeArithmeticFunctionWrapper(function.getFunctionString(), function));
+    public SchemeArithmeticFunctionWrapper insertToProducerTable(SchemeArithmeticFunction function){
+        SchemeArithmeticFunctionWrapper returnObj = new SchemeArithmeticFunctionWrapper(function.getFunctionString(), function);
+        producerTableList.add(returnObj);
+        return returnObj;
     }
-    public void insertToConsumerTable(SchemeArithmeticFunction function){
+    public SchemeArithmeticFunctionWrapper insertToConsumerTable(SchemeArithmeticFunction function){
         try {
             Double result = function.getResult();
-            consumerTableList.add(new SchemeArithmeticFunctionWrapper(function.getFunctionString() + " = " + result, function));
+            SchemeArithmeticFunctionWrapper returnObj = new SchemeArithmeticFunctionWrapper(function.getFunctionString() + " = " + result, function);
+            consumerTableList.add(returnObj);
+            return returnObj;
         } catch (InvalidSchemeOperation ex) {
-            runErrorDialog(ex.getMessage() + ":\n" + function.getFunctionString());
+            runErrorDialog(ex.getMessage());
         }
+        return null;
+    }
+    public boolean deleteProducerFromList(SchemeArithmeticFunctionWrapper producer){
+        return producerTableList.remove(producer);
+    }
+    public boolean deleteConsumerFromList(SchemeArithmeticFunctionWrapper consumer){
+        return consumerTableList.remove(consumer);
     }
     @Override
     public void initialize(URL url, ResourceBundle rb) {
