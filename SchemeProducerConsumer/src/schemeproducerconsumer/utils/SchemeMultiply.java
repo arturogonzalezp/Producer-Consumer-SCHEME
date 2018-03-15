@@ -7,7 +7,7 @@ import schemeproducerconsumer.exceptions.InvalidSchemeOperation;
  * @github arturogonzalezp
  */
 
-public class SchemeMultiply implements SchemeAritmeticFunction{
+public class SchemeMultiply implements SchemeArithmeticFunction{
     private Double x,y;
     public SchemeMultiply(Number x, Number y){
         setValues(x, y);
