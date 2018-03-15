@@ -5,7 +5,7 @@ package schemeproducerconsumer.utils;
  * @github arturogonzalezp
  */
 
-public class SchemeSum implements SchemeAritmeticFunction{
+public class SchemeSum implements SchemeArithmeticFunction{
     private Double x,y;
     public SchemeSum(Number x, Number y){
         setValues(x, y);

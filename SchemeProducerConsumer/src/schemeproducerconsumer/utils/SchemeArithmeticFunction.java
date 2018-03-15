@@ -7,7 +7,7 @@ import schemeproducerconsumer.exceptions.InvalidSchemeOperation;
  * @github arturogonzalezp
  */
 
-public interface SchemeAritmeticFunction {
+public interface SchemeArithmeticFunction {
     void setValues(Number x, Number y);
     Double getResult() throws InvalidSchemeOperation;
     String getFunctionString();

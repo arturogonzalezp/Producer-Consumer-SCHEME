@@ -7,7 +7,7 @@ import schemeproducerconsumer.exceptions.InvalidSchemeOperation;
  * @github arturogonzalezp
  */
 
-public class SchemeDiv implements SchemeAritmeticFunction{
+public class SchemeDiv implements SchemeArithmeticFunction{
     private Double x,y;
     public SchemeDiv(Number x, Number y){
         setValues(x, y);
