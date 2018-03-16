@@ -21,7 +21,6 @@ import javafx.scene.control.TreeTableColumn;
 import javafx.scene.layout.StackPane;
 import javafx.util.Callback;
 import schemeproducerconsumer.exceptions.InvalidSchemeOperation;
-import schemeproducerconsumer.utils.RandomSchemeGenerator;
 import schemeproducerconsumer.utils.SchemeArithmeticFunction;
 import schemeproducerconsumer.utils.SchemeArithmeticFunctionWrapper;
 import schemeproducerconsumer.visual.controllers.ErrorDialog;
@@ -46,7 +45,6 @@ public class MainWindowController implements Initializable {
     private JFXButton startButton, stopButton; 
     
     private ObservableList<SchemeArithmeticFunctionWrapper> producerTableList, consumerTableList;
-    //private TreeItem<SchemeArithmeticFunctionWrapper> producerRoot;
     
     @FXML
     private void runProgram(ActionEvent event){
