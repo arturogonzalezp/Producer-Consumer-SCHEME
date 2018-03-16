@@ -8,8 +8,6 @@ import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -23,12 +21,9 @@ import javafx.scene.control.TreeTableColumn;
 import javafx.scene.layout.StackPane;
 import javafx.util.Callback;
 import schemeproducerconsumer.exceptions.InvalidSchemeOperation;
+import schemeproducerconsumer.utils.RandomSchemeGenerator;
 import schemeproducerconsumer.utils.SchemeArithmeticFunction;
 import schemeproducerconsumer.utils.SchemeArithmeticFunctionWrapper;
-import schemeproducerconsumer.utils.SchemeDiv;
-import schemeproducerconsumer.utils.SchemeMultiply;
-import schemeproducerconsumer.utils.SchemeSub;
-import schemeproducerconsumer.utils.SchemeSum;
 import schemeproducerconsumer.visual.controllers.ErrorDialog;
 
 /**
@@ -40,7 +35,7 @@ public class MainWindowController implements Initializable {
     @FXML
     private StackPane messagePane;
     @FXML
-    private JFXTreeTableView onqueueTreeView, doneTreeView;
+    private JFXTreeTableView producerTreeView, consumerTreeView;
     @FXML
     private Label onqueueCountLabel, doneCountLabel, bufferLabel, consumerLabel, producerLabel;
     @FXML
@@ -55,8 +50,6 @@ public class MainWindowController implements Initializable {
     
     @FXML
     private void runProgram(ActionEvent event){
-        setQueueCounter(getProducerNum());
-        setDoneCounter(getConsumerNum());
         runErrorDialog("Buffer size: " + getBufferNum());
         changeInputStates(true);
     }
@@ -99,6 +92,7 @@ public class MainWindowController implements Initializable {
     private void initializeProducerTable(){
         JFXTreeTableColumn<SchemeArithmeticFunctionWrapper,String> producerColumn = new JFXTreeTableColumn<>("Functions");
         producerColumn.setPrefWidth(198);
+        producerColumn.setMaxWidth(198);
         producerColumn.setResizable(false);
         producerColumn.setSortable(false);
         producerColumn.setEditable(false);
@@ -112,13 +106,15 @@ public class MainWindowController implements Initializable {
         final TreeItem<SchemeArithmeticFunctionWrapper> producerRoot = new RecursiveTreeItem<>(producerTableList,(param) -> {
             return param.getChildren();
         });
-        onqueueTreeView.getColumns().setAll(producerColumn);
-        onqueueTreeView.setRoot(producerRoot);
-        onqueueTreeView.setShowRoot(false);
+        producerTreeView.getColumns().setAll(producerColumn);
+        producerTreeView.setRoot(producerRoot);
+        producerTreeView.setShowRoot(false);
+        updateProducerLabel();
     }
     public void initializeConsumerTable(){
         JFXTreeTableColumn<SchemeArithmeticFunctionWrapper,String> consumerColumn = new JFXTreeTableColumn<>("Results");
         consumerColumn.setPrefWidth(198);
+        consumerColumn.setMaxWidth(198);
         consumerColumn.setResizable(false);
         consumerColumn.setSortable(false);
         consumerColumn.setEditable(false);
@@ -132,39 +128,35 @@ public class MainWindowController implements Initializable {
         final TreeItem<SchemeArithmeticFunctionWrapper> consumerRoot = new RecursiveTreeItem<>(consumerTableList,(param) -> {
             return param.getChildren();
         });
-        doneTreeView.getColumns().setAll(consumerColumn);
-        doneTreeView.setRoot(consumerRoot);
-        doneTreeView.setShowRoot(false);
+        consumerTreeView.getColumns().setAll(consumerColumn);
+        consumerTreeView.setRoot(consumerRoot);
+        consumerTreeView.setShowRoot(false);
+        updateConsumerLabel();
+    }
+    private void updateProducerLabel(){
+        setProducerCounter(producerTableList.size());
+    }
+    private void updateConsumerLabel(){
+        setConsumerCounter(consumerTableList.size());
     }
     public void runErrorDialog(String message) {
         new ErrorDialog(message,messagePane).show();
     }
-    public void setQueueCounter(int num){
+    public void setProducerCounter(int num){
         String str = "" + num;
         onqueueCountLabel.setText(str);
     }
-    public void setDoneCounter(int num){
+    public void setConsumerCounter(int num){
         String str = "" + num;
         doneCountLabel.setText(str);
-    }
-    public int getQueueCounter(){
-        return Integer.parseInt(onqueueCountLabel.getText());
-    }
-    public int getDoneCounterLabel(){
-        return Integer.parseInt(doneCountLabel.getText());
     }
     public int getBufferNum(){
         return (int) bufferNumSlider.getValue();
     }
-    public int getProducerNum(){
-        return (int) producerNumSlider.getValue();
-    }
-    public int getConsumerNum(){
-        return (int) consumerNumSlider.getValue();
-    }
     public SchemeArithmeticFunctionWrapper insertToProducerTable(SchemeArithmeticFunction function){
         SchemeArithmeticFunctionWrapper returnObj = new SchemeArithmeticFunctionWrapper(function.getFunctionString(), function);
         producerTableList.add(returnObj);
+        updateProducerLabel();
         return returnObj;
     }
     public SchemeArithmeticFunctionWrapper insertToConsumerTable(SchemeArithmeticFunction function){
@@ -172,6 +164,7 @@ public class MainWindowController implements Initializable {
             Double result = function.getResult();
             SchemeArithmeticFunctionWrapper returnObj = new SchemeArithmeticFunctionWrapper(function.getFunctionString() + " = " + result, function);
             consumerTableList.add(returnObj);
+            updateConsumerLabel();
             return returnObj;
         } catch (InvalidSchemeOperation ex) {
             runErrorDialog(ex.getMessage());
@@ -179,10 +172,16 @@ public class MainWindowController implements Initializable {
         return null;
     }
     public boolean deleteProducerFromList(SchemeArithmeticFunctionWrapper producer){
-        return producerTableList.remove(producer);
+        boolean removed = producerTableList.remove(producer);
+        if(removed)
+            updateProducerLabel();
+        return removed;
     }
     public boolean deleteConsumerFromList(SchemeArithmeticFunctionWrapper consumer){
-        return consumerTableList.remove(consumer);
+        boolean removed = consumerTableList.remove(consumer);
+        if(removed)
+            updateConsumerLabel();
+        return removed;
     }
     @Override
     public void initialize(URL url, ResourceBundle rb) {

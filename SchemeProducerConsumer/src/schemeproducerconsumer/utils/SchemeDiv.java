@@ -22,7 +22,7 @@ public class SchemeDiv implements SchemeArithmeticFunction{
     public Double getResult() throws InvalidSchemeOperation {
         if(y == 0)
             throw new InvalidSchemeOperation("Invalid division by 0:\n" + getFunctionString());
-        return x / y;
+        return Math.floor((x / y) * 100) / 100;
     }
 
     @Override
