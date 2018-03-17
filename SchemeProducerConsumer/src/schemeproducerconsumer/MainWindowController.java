@@ -15,6 +15,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.AccessibleRole;
 import javafx.scene.control.Label;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
@@ -42,14 +43,17 @@ public class MainWindowController implements Initializable {
     @FXML
     private JFXTextField consumerTimeInput, producerTimeInput;
     @FXML
-    private JFXButton startButton, stopButton; 
+    private JFXButton startButton, pauseButton, stopButton; 
     
     private ObservableList<SchemeArithmeticFunctionWrapper> producerTableList, consumerTableList;
     
     @FXML
-    private void runProgram(ActionEvent event){
-        runErrorDialog("Buffer size: " + getBufferSliderNum());
+    private void startProgram(ActionEvent event){
         changeInputStates(true);
+    }
+    @FXML
+    private void pauseProgram(ActionEvent event){
+        runErrorDialog("Function not implemented yet");
     }
     @FXML
     private void stopProgram(ActionEvent event){
@@ -63,6 +67,7 @@ public class MainWindowController implements Initializable {
         producerTimeInput.setDisable(state);
         startButton.setDisable(state);
         stopButton.setDisable(!state);
+        pauseButton.setDisable(!state);
     }
     private void initializeSliders(){
         bufferNumSlider.valueProperty().addListener(new ChangeListener<Number>(){
@@ -131,6 +136,30 @@ public class MainWindowController implements Initializable {
         consumerTreeView.setShowRoot(false);
         updateConsumerLabel();
     }
+    private void initializeTimeInputs(){
+        producerTimeInput.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, 
+                String newValue) {
+                if(newValue.equals("") || newValue.equals("0")){
+                    producerTimeInput.setText("1000");
+                }else if (!newValue.matches("\\d*")) {
+                    producerTimeInput.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
+        consumerTimeInput.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, 
+                String newValue) {
+                if(newValue.equals("") || newValue.equals("0")){
+                    consumerTimeInput.setText("1000");
+                }else if (!newValue.matches("\\d*")) {
+                    consumerTimeInput.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
+    }
     private void updateProducerLabel(){
         setProducerCounter(producerTableList.size());
     }
@@ -190,6 +219,7 @@ public class MainWindowController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         initializeSliders();
+        initializeTimeInputs();
         initializeProducerTable();
         initializeConsumerTable();
     }    
