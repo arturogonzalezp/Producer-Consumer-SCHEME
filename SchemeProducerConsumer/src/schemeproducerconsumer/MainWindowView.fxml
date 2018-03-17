@@ -31,6 +31,7 @@
                   <JFXButton fx:id="pauseButton" buttonType="RAISED" disable="true" layoutX="250.0" layoutY="414.0" onAction="#pauseProgram" prefHeight="50.0" prefWidth="100.0" ripplerFill="#ffe082" style="-fx-background-color: #FFC107; -fx-cursor: hand;" text="Pause" textAlignment="CENTER" textFill="WHITE" />
                   <Label layoutX="173.0" layoutY="131.0" text="ms" />
                   <Label layoutX="531.0" layoutY="131.0" text="ms" />
+                  <JFXButton fx:id="developersButton" layoutX="510.0" layoutY="10.0" onAction="#showDevelopers" prefWidth="80.0" text="Developers" />
                </children>
             </AnchorPane>
          </children>

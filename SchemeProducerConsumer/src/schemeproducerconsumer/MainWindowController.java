@@ -14,17 +14,19 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.AccessibleRole;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 import schemeproducerconsumer.exceptions.InvalidSchemeOperation;
 import schemeproducerconsumer.utils.SchemeArithmeticFunction;
 import schemeproducerconsumer.utils.SchemeArithmeticFunctionWrapper;
-import schemeproducerconsumer.visual.controllers.ErrorDialog;
+import schemeproducerconsumer.utils.ErrorDialog;
 
 /**
  * @author César Arturo González Pérez
@@ -43,7 +45,7 @@ public class MainWindowController implements Initializable {
     @FXML
     private JFXTextField consumerTimeInput, producerTimeInput;
     @FXML
-    private JFXButton startButton, pauseButton, stopButton; 
+    private JFXButton startButton, pauseButton, stopButton, developersButton; 
     
     private ObservableList<SchemeArithmeticFunctionWrapper> producerTableList, consumerTableList;
     
@@ -59,6 +61,17 @@ public class MainWindowController implements Initializable {
     private void stopProgram(ActionEvent event){
         changeInputStates(false);
     }
+    @FXML
+    private void showDevelopers(ActionEvent event){
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("visual/views/DevelopersWindow.fxml"));
+            Stage stage = (Stage) developersButton.getScene().getWindow();
+            Scene scene = new Scene(loader.load());
+            stage.setScene(scene);
+        }catch (Exception e){
+            runErrorDialog("Internal Error");
+        }
+    }
     private void changeInputStates(Boolean state){
         bufferNumSlider.setDisable(state);
         consumerNumSlider.setDisable(state);
@@ -68,6 +81,7 @@ public class MainWindowController implements Initializable {
         startButton.setDisable(state);
         stopButton.setDisable(!state);
         pauseButton.setDisable(!state);
+        developersButton.setDisable(state);
     }
     private void initializeSliders(){
         bufferNumSlider.valueProperty().addListener(new ChangeListener<Number>(){
