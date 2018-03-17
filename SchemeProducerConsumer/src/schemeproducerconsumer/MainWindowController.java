@@ -36,7 +36,7 @@ public class MainWindowController implements Initializable {
     @FXML
     private JFXTreeTableView producerTreeView, consumerTreeView;
     @FXML
-    private Label onqueueCountLabel, doneCountLabel, bufferLabel, consumerLabel, producerLabel;
+    private Label producerCountLabel, consumerCountLabel, bufferLabel, consumerLabel, producerLabel;
     @FXML
     private JFXSlider bufferNumSlider, consumerNumSlider, producerNumSlider;
     @FXML
@@ -48,7 +48,7 @@ public class MainWindowController implements Initializable {
     
     @FXML
     private void runProgram(ActionEvent event){
-        runErrorDialog("Buffer size: " + getBufferNum());
+        runErrorDialog("Buffer size: " + getBufferSliderNum());
         changeInputStates(true);
     }
     @FXML
@@ -109,7 +109,7 @@ public class MainWindowController implements Initializable {
         producerTreeView.setShowRoot(false);
         updateProducerLabel();
     }
-    public void initializeConsumerTable(){
+    private void initializeConsumerTable(){
         JFXTreeTableColumn<SchemeArithmeticFunctionWrapper,String> consumerColumn = new JFXTreeTableColumn<>("Results");
         consumerColumn.setPrefWidth(198);
         consumerColumn.setMaxWidth(198);
@@ -137,19 +137,25 @@ public class MainWindowController implements Initializable {
     private void updateConsumerLabel(){
         setConsumerCounter(consumerTableList.size());
     }
+    private void setProducerCounter(int num){
+        String str = "" + num;
+        producerCountLabel.setText(str);
+    }
+    private void setConsumerCounter(int num){
+        String str = "" + num;
+        consumerCountLabel.setText(str);
+    }
     public void runErrorDialog(String message) {
         new ErrorDialog(message,messagePane).show();
     }
-    public void setProducerCounter(int num){
-        String str = "" + num;
-        onqueueCountLabel.setText(str);
-    }
-    public void setConsumerCounter(int num){
-        String str = "" + num;
-        doneCountLabel.setText(str);
-    }
-    public int getBufferNum(){
+    public int getBufferSliderNum(){
         return (int) bufferNumSlider.getValue();
+    }
+    public int getProducerSliderNum(){
+        return (int) producerNumSlider.getValue();
+    }
+    public int getConsumerSliderNum(){
+        return (int) producerNumSlider.getValue();
     }
     public SchemeArithmeticFunctionWrapper insertToProducerTable(SchemeArithmeticFunction function){
         SchemeArithmeticFunctionWrapper returnObj = new SchemeArithmeticFunctionWrapper(function.getFunctionString(), function);
