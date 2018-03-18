@@ -4,7 +4,6 @@ import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-
 /**
  * @author César Arturo González Pérez
  * @github arturogonzalezp

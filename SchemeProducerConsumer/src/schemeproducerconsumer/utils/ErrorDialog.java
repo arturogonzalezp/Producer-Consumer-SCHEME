@@ -1,4 +1,4 @@
-package schemeproducerconsumer.visual.controllers;
+package schemeproducerconsumer.utils;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialog;

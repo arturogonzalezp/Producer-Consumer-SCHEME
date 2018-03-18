@@ -1,5 +1,7 @@
 package schemeproducerconsumer.utils;
 
+import schemeproducerconsumer.exceptions.InvalidSchemeOperation;
+
 /**
  * @author César Arturo González Pérez
  * @github arturogonzalezp
@@ -17,7 +19,7 @@ public class SchemeSub implements SchemeArithmeticFunction{
     }
 
     @Override
-    public Double getResult() throws ArithmeticException {
+    public Double getResult() throws InvalidSchemeOperation {
         return x - y;
     }
 

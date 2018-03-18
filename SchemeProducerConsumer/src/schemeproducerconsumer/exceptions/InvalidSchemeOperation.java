@@ -1,14 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package schemeproducerconsumer.exceptions;
 
 /**
- *
- * @author cesar
+ * @author César Arturo González Pérez
+ * @github arturogonzalezp
  */
+
 public class InvalidSchemeOperation extends Exception{
     public InvalidSchemeOperation(String message){
         super(message);

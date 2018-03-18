@@ -25,3 +25,6 @@ hs_err_pid*
 /SchemeProducerConsumer/nbproject/private/
 /SchemeProducerConsumer/build/
 /SchemeProducerConsumer/dist/
+
+# Custom
+!jfoenix.jar

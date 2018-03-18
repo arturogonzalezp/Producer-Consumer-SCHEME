@@ -8,28 +8,25 @@ import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 import schemeproducerconsumer.exceptions.InvalidSchemeOperation;
 import schemeproducerconsumer.utils.SchemeArithmeticFunction;
 import schemeproducerconsumer.utils.SchemeArithmeticFunctionWrapper;
-import schemeproducerconsumer.utils.SchemeDiv;
-import schemeproducerconsumer.utils.SchemeMultiply;
-import schemeproducerconsumer.utils.SchemeSub;
-import schemeproducerconsumer.utils.SchemeSum;
-import schemeproducerconsumer.visual.controllers.ErrorDialog;
+import schemeproducerconsumer.utils.ErrorDialog;
 
 /**
  * @author César Arturo González Pérez
@@ -40,29 +37,40 @@ public class MainWindowController implements Initializable {
     @FXML
     private StackPane messagePane;
     @FXML
-    private JFXTreeTableView onqueueTreeView, doneTreeView;
+    private JFXTreeTableView producerTreeView, consumerTreeView;
     @FXML
-    private Label onqueueCountLabel, doneCountLabel, bufferLabel, consumerLabel, producerLabel;
+    private Label producerCountLabel, consumerCountLabel, bufferLabel, consumerLabel, producerLabel;
     @FXML
     private JFXSlider bufferNumSlider, consumerNumSlider, producerNumSlider;
     @FXML
     private JFXTextField consumerTimeInput, producerTimeInput;
     @FXML
-    private JFXButton startButton, stopButton; 
+    private JFXButton startButton, pauseButton, stopButton, developersButton; 
     
     private ObservableList<SchemeArithmeticFunctionWrapper> producerTableList, consumerTableList;
-    //private TreeItem<SchemeArithmeticFunctionWrapper> producerRoot;
     
     @FXML
-    private void runProgram(ActionEvent event){
-        setQueueCounter(getProducerNum());
-        setDoneCounter(getConsumerNum());
-        runErrorDialog("Buffer size: " + getBufferNum());
+    private void startProgram(ActionEvent event){
         changeInputStates(true);
+    }
+    @FXML
+    private void pauseProgram(ActionEvent event){
+        runErrorDialog("Function not implemented yet");
     }
     @FXML
     private void stopProgram(ActionEvent event){
         changeInputStates(false);
+    }
+    @FXML
+    private void showDevelopers(ActionEvent event){
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("visual/views/DevelopersWindow.fxml"));
+            Stage stage = (Stage) developersButton.getScene().getWindow();
+            Scene scene = new Scene(loader.load());
+            stage.setScene(scene);
+        }catch (Exception e){
+            runErrorDialog("Internal Error");
+        }
     }
     private void changeInputStates(Boolean state){
         bufferNumSlider.setDisable(state);
@@ -72,6 +80,8 @@ public class MainWindowController implements Initializable {
         producerTimeInput.setDisable(state);
         startButton.setDisable(state);
         stopButton.setDisable(!state);
+        pauseButton.setDisable(!state);
+        developersButton.setDisable(state);
     }
     private void initializeSliders(){
         bufferNumSlider.valueProperty().addListener(new ChangeListener<Number>(){
@@ -99,6 +109,7 @@ public class MainWindowController implements Initializable {
     private void initializeProducerTable(){
         JFXTreeTableColumn<SchemeArithmeticFunctionWrapper,String> producerColumn = new JFXTreeTableColumn<>("Functions");
         producerColumn.setPrefWidth(198);
+        producerColumn.setMaxWidth(198);
         producerColumn.setResizable(false);
         producerColumn.setSortable(false);
         producerColumn.setEditable(false);
@@ -112,13 +123,15 @@ public class MainWindowController implements Initializable {
         final TreeItem<SchemeArithmeticFunctionWrapper> producerRoot = new RecursiveTreeItem<>(producerTableList,(param) -> {
             return param.getChildren();
         });
-        onqueueTreeView.getColumns().setAll(producerColumn);
-        onqueueTreeView.setRoot(producerRoot);
-        onqueueTreeView.setShowRoot(false);
+        producerTreeView.getColumns().setAll(producerColumn);
+        producerTreeView.setRoot(producerRoot);
+        producerTreeView.setShowRoot(false);
+        updateProducerLabel();
     }
-    public void initializeConsumerTable(){
+    private void initializeConsumerTable(){
         JFXTreeTableColumn<SchemeArithmeticFunctionWrapper,String> consumerColumn = new JFXTreeTableColumn<>("Results");
         consumerColumn.setPrefWidth(198);
+        consumerColumn.setMaxWidth(198);
         consumerColumn.setResizable(false);
         consumerColumn.setSortable(false);
         consumerColumn.setEditable(false);
@@ -132,39 +145,65 @@ public class MainWindowController implements Initializable {
         final TreeItem<SchemeArithmeticFunctionWrapper> consumerRoot = new RecursiveTreeItem<>(consumerTableList,(param) -> {
             return param.getChildren();
         });
-        doneTreeView.getColumns().setAll(consumerColumn);
-        doneTreeView.setRoot(consumerRoot);
-        doneTreeView.setShowRoot(false);
+        consumerTreeView.getColumns().setAll(consumerColumn);
+        consumerTreeView.setRoot(consumerRoot);
+        consumerTreeView.setShowRoot(false);
+        updateConsumerLabel();
+    }
+    private void initializeTimeInputs(){
+        producerTimeInput.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, 
+                String newValue) {
+                if(newValue.equals("") || newValue.equals("0")){
+                    producerTimeInput.setText("1000");
+                }else if (!newValue.matches("\\d*")) {
+                    producerTimeInput.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
+        consumerTimeInput.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, 
+                String newValue) {
+                if(newValue.equals("") || newValue.equals("0")){
+                    consumerTimeInput.setText("1000");
+                }else if (!newValue.matches("\\d*")) {
+                    consumerTimeInput.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
+    }
+    private void updateProducerLabel(){
+        setProducerCounter(producerTableList.size());
+    }
+    private void updateConsumerLabel(){
+        setConsumerCounter(consumerTableList.size());
+    }
+    private void setProducerCounter(int num){
+        String str = "" + num;
+        producerCountLabel.setText(str);
+    }
+    private void setConsumerCounter(int num){
+        String str = "" + num;
+        consumerCountLabel.setText(str);
     }
     public void runErrorDialog(String message) {
         new ErrorDialog(message,messagePane).show();
     }
-    public void setQueueCounter(int num){
-        String str = "" + num;
-        onqueueCountLabel.setText(str);
-    }
-    public void setDoneCounter(int num){
-        String str = "" + num;
-        doneCountLabel.setText(str);
-    }
-    public int getQueueCounter(){
-        return Integer.parseInt(onqueueCountLabel.getText());
-    }
-    public int getDoneCounterLabel(){
-        return Integer.parseInt(doneCountLabel.getText());
-    }
-    public int getBufferNum(){
+    public int getBufferSliderNum(){
         return (int) bufferNumSlider.getValue();
     }
-    public int getProducerNum(){
+    public int getProducerSliderNum(){
         return (int) producerNumSlider.getValue();
     }
-    public int getConsumerNum(){
-        return (int) consumerNumSlider.getValue();
+    public int getConsumerSliderNum(){
+        return (int) producerNumSlider.getValue();
     }
     public SchemeArithmeticFunctionWrapper insertToProducerTable(SchemeArithmeticFunction function){
         SchemeArithmeticFunctionWrapper returnObj = new SchemeArithmeticFunctionWrapper(function.getFunctionString(), function);
         producerTableList.add(returnObj);
+        updateProducerLabel();
         return returnObj;
     }
     public SchemeArithmeticFunctionWrapper insertToConsumerTable(SchemeArithmeticFunction function){
@@ -172,6 +211,7 @@ public class MainWindowController implements Initializable {
             Double result = function.getResult();
             SchemeArithmeticFunctionWrapper returnObj = new SchemeArithmeticFunctionWrapper(function.getFunctionString() + " = " + result, function);
             consumerTableList.add(returnObj);
+            updateConsumerLabel();
             return returnObj;
         } catch (InvalidSchemeOperation ex) {
             runErrorDialog(ex.getMessage());
@@ -179,14 +219,21 @@ public class MainWindowController implements Initializable {
         return null;
     }
     public boolean deleteProducerFromList(SchemeArithmeticFunctionWrapper producer){
-        return producerTableList.remove(producer);
+        boolean removed = producerTableList.remove(producer);
+        if(removed)
+            updateProducerLabel();
+        return removed;
     }
     public boolean deleteConsumerFromList(SchemeArithmeticFunctionWrapper consumer){
-        return consumerTableList.remove(consumer);
+        boolean removed = consumerTableList.remove(consumer);
+        if(removed)
+            updateConsumerLabel();
+        return removed;
     }
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         initializeSliders();
+        initializeTimeInputs();
         initializeProducerTable();
         initializeConsumerTable();
     }    
