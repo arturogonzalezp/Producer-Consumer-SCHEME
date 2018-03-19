@@ -1,10 +1,13 @@
 package schemeproducerconsumer;
 
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 /**
  * @author César Arturo González Pérez
@@ -21,6 +24,13 @@ public class SchemeProducerConsumer extends Application {
         stage.setScene(scene);
         stage.setResizable(false);
         stage.setTitle("SCHEME Producer Consumer");
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent t) {
+                Platform.exit();
+                System.exit(0);
+            }
+        });
         stage.show();
     }
 
