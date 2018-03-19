@@ -25,8 +25,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import schemeproducerconsumer.exceptions.InvalidSchemeOperation;
-import schemeproducerconsumer.threads.Consumer;
-import schemeproducerconsumer.threads.Producer;
+import schemeproducerconsumer.threads.ProducerConsumerManager;
 import schemeproducerconsumer.utils.Buffer;
 import schemeproducerconsumer.utils.SchemeArithmeticFunction;
 import schemeproducerconsumer.utils.SchemeArithmeticFunctionWrapper;
@@ -52,26 +51,38 @@ public class MainWindowController implements Initializable {
     private JFXButton startButton, pauseButton, stopButton, developersButton; 
     
     private ObservableList<SchemeArithmeticFunctionWrapper> producerTableList, consumerTableList;
+    private ProducerConsumerManager pcManager;
+    private boolean paused;
     
     @FXML
     private void startProgram(ActionEvent event){
         changeInputStates(true);
         Buffer buffer = new Buffer(getBufferSliderNum(), this);
-        Producer p1 = new Producer(buffer, "Producer 1", getProducerTime());
-        p1.start();
-        Producer p2 = new Producer(buffer,"Producer 2", getProducerTime());
-        p2.start();
-        
-        Consumer c1 = new Consumer(buffer, "Consumer 1", getConsumerTime());
-        c1.start();
+        pcManager.initialize(buffer, getProducerSliderNum(), getConsumerSliderNum(), getProducerTime(), getConsumerTime());
+        pcManager.start();
+        paused = false;
     }
     @FXML
     private void pauseProgram(ActionEvent event){
-        runErrorDialog("Function not implemented yet");
+        if(!paused){
+            pauseButton.setText("Continue");
+            paused = true;
+            pcManager.pause();
+        }else{
+            pauseButton.setText("Pause");
+            paused = false;
+            pcManager.unPause();
+        }
     }
     @FXML
     private void stopProgram(ActionEvent event){
         changeInputStates(false);
+        pcManager.stop();
+        paused = false;
+        producerTableList.clear();
+        consumerTableList.clear();
+        updateProducerLabel();
+        updateConsumerLabel();
     }
     @FXML
     private void showDevelopers(ActionEvent event){
@@ -240,7 +251,7 @@ public class MainWindowController implements Initializable {
         return (int) producerNumSlider.getValue();
     }
     public int getConsumerSliderNum(){
-        return (int) producerNumSlider.getValue();
+        return (int) consumerNumSlider.getValue();
     }
     public int getProducerTime(){
         return Integer.parseInt(producerTimeInput.getText());
@@ -302,5 +313,7 @@ public class MainWindowController implements Initializable {
         initializeTimeInputs();
         initializeProducerTable();
         initializeConsumerTable();
+        pcManager = new ProducerConsumerManager();
+        paused = false;
     }    
 }
