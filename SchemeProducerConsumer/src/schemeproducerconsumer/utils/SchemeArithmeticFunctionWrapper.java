@@ -10,11 +10,13 @@ import javafx.beans.property.StringProperty;
  */
 
 public class SchemeArithmeticFunctionWrapper extends RecursiveTreeObject<SchemeArithmeticFunctionWrapper>{
-    public StringProperty display;
+    public StringProperty display, producerThreadName, consumerThreadName;
     public SchemeArithmeticFunction function;
     
-    public SchemeArithmeticFunctionWrapper(String display, SchemeArithmeticFunction function){
+    public SchemeArithmeticFunctionWrapper(String display, String producerThreadName, String consumerThreadName, SchemeArithmeticFunction function){
         this.display = new SimpleStringProperty(display);
         this.function = function;
+        this.producerThreadName = new SimpleStringProperty(producerThreadName);
+        this.consumerThreadName = new SimpleStringProperty(consumerThreadName);
     }
 }
